@@ -57,7 +57,251 @@ jobs:
         cd openwrt
         echo "src-git ssrp https://github.com/fw876/helloworld.git" >> ./feeds.conf.default
         echo 'src-git small8 https://github.com/kenzok8/small-package' >>feeds.conf.default                                    #kenzok8    
-# echo 'src-git kenzo https://github.com/kenzok8/openwrt-packages' >>feeds.conf.default
+#     30
+        sudo rm -rf \
+31
+          /usr/share/dotnet \
+32
+          /etc/mysql \
+33
+          /etc/php
+34
+        sudo -E apt-get -y purge \
+35
+          azure-cli \
+36
+          ghc* \
+37
+          zulu* \
+38
+          hhvm \
+39
+          llvm* \
+40
+          firefox \
+41
+          google* \
+42
+          dotnet* \
+43
+          powershell \
+44
+          openjdk* \
+45
+          mysql* \
+46
+          php*
+47
+        sudo -E apt-get update
+48
+        sudo -E apt-get -y install ack antlr3 aria2 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libreadline-dev libssl-dev libtool lrzsz mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pip libpython3-dev qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
+49
+        sudo -E apt-get -y autoremove --purge
+50
+        sudo -E apt-get clean
+51
+    - name: Clone source code
+52
+      env: 
+53
+        REPO_URL: https://github.com/coolsnowwolf/lede
+54
+        REPO_BRANCH: master
+55
+      run: |
+56
+        git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
+57
+        cd openwrt
+58
+        echo "src-git ssrp https://github.com/fw876/helloworld.git" >> ./feeds.conf.default
+59
+        echo 'src-git small8 https://github.com/kenzok8/small-package' >>feeds.conf.default                                    #kenzok8    
+60
+#    echo 'src-git kenzo https://github.com/kenzok8/openwrt-packages' >>feeds.conf.default
+61
+​
+62
+    - name: Update & Install feeds
+63
+      working-directory: ./openwrt
+64
+      run: |
+65
+        ./scripts/feeds update -a
+66
+        ./scripts/feeds install -a
+67
+        ./scripts/feeds install -a
+68
+        
+69
+    #- name: Import external feeds - passwall
+70
+    #  working-directory: ./openwrt
+71
+    #  run: |
+72
+    #    git clone https://github.com/xiaorouji/openwrt-passwall.git package/lienol
+73
+    #    git clone "your_github_link" package/"your_folder_name"      
+74
+​
+75
+    #- name: Import external feeds - JerryKuKu Argon
+76
+    #  working-directory: ./openwrt
+77
+    #  run: |
+78
+    #    git clone -b 18.06 https:github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon-jerrykuku
+79
+​
+80
+    - name: Configuration Customization - Build_NanoPi_R2C
+81
+      env:
+82
+        CONFIG_FILE: 'NanoPi_R2C.config'
+83
+      run: |
+84
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+85
+        chmod +x ./customize.sh && ./customize.sh
+86
+        cd openwrt && make defconfig
+87
+
+88
+    - name: Download package
+89
+      working-directory: ./openwrt
+90
+      run: |
+
+        sudo rm -rf \
+
+          /usr/share/dotnet \
+
+          /etc/mysql \
+
+          /etc/php
+
+        sudo -E apt-get -y purge \
+
+          azure-cli \
+
+          ghc* \
+
+          zulu* \
+
+          hhvm \
+
+          llvm* \
+
+          firefox \
+
+          google* \
+
+          dotnet* \
+
+          powershell \
+
+          openjdk* \
+
+          mysql* \
+
+          php*
+
+        sudo -E apt-get update
+
+        sudo -E apt-get -y install ack antlr3 aria2 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libreadline-dev libssl-dev libtool lrzsz mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pip libpython3-dev qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
+
+        sudo -E apt-get -y autoremove --purge
+
+        sudo -E apt-get clean
+
+    - name: Clone source code
+
+      env: 
+
+        REPO_URL: https://github.com/coolsnowwolf/lede
+
+        REPO_BRANCH: master
+
+      run: |
+
+        git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
+
+        cd openwrt
+
+        echo "src-git ssrp https://github.com/fw876/helloworld.git" >> ./feeds.conf.default
+
+        echo 'src-git small8 https://github.com/kenzok8/small-package' >>feeds.conf.default                                    #kenzok8    
+
+        echo 'src-git kenzo https://github.com/kenzok8/openwrt-packages' >>feeds.conf.default
+
+
+
+    - name: Update & Install feeds
+
+      working-directory: ./openwrt
+
+      run: |
+
+        ./scripts/feeds update -a
+
+        ./scripts/feeds install -a
+
+        ./scripts/feeds install -a
+
+        
+
+    #- name: Import external feeds - passwall
+
+    #  working-directory: ./openwrt
+
+    #  run: |
+
+    #    git clone https://github.com/xiaorouji/openwrt-passwall.git package/lienol
+
+    #    git clone "your_github_link" package/"your_folder_name"      
+
+
+
+    #- name: Import external feeds - JerryKuKu Argon
+
+    #  working-directory: ./openwrt
+
+    #  run: |
+
+    #    git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon-jerrykuku
+
+
+
+    - name: Configuration Customization - Build_NanoPi_R2C
+
+      env:
+
+        CONFIG_FILE: 'NanoPi_R2C.config'
+
+      run: |
+
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+
+        chmod +x ./customize.sh && ./customize.sh
+
+        cd openwrt && make defconfig
+
+        
+
+    - name: Download package
+
+      working-directory: ./openwrt
+
+
+      run: |echo 'src-git kenzo https://github.com/kenzok8/openwrt-packages' >>feeds.conf.default
 
     - name: Update & Install feeds
       working-directory: ./openwrt
